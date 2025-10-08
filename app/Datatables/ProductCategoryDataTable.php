@@ -2,7 +2,6 @@
 
 namespace App\DataTables;
 
-
 use App\Models\Admin\ProductCategory;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
