@@ -82,8 +82,6 @@ class ProductController extends Controller
 
         } catch (Exception $e) {
 
-           
-
                return back()->with(["error"=>"Something Went wrong"]);
 
         }

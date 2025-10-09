@@ -15,7 +15,8 @@
     @endpush
     <x-admin.pageheader title="Create Product" />
     <x-admin.error />
-    <form method="post" action="{{route('admin.product.store')}}" id="productform" class="card w-75 mx-auto p-3" enctype="multipart/form-data">
+    <form  method="post" action="{{route('admin.product.store')}}" id="productform" class="card w-100 mx-auto p-5 form_width"
+        enctype="multipart/form-data">
         @csrf
 
         <div class="row my-3">
@@ -41,7 +42,7 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-              <x-admin.input label="brand" name="brand" type="select" :items="$brands"/>
+                <x-admin.input label="brand" name="brand" type="select" :items="$brands" />
             </div>
 
         </div>
@@ -89,76 +90,7 @@
 
     </form>
 @endsection
-@push("scripts")
 
-    <!-- FilePond image preview plugin -->
-    <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.js"></script>
-
-    <script>
-        // Register the plugin
-        FilePond.registerPlugin(FilePondPluginImagePreview);
-
-        let uploadedFilePaths = []; // Store paths externally
-
-        // Initialize FilePond
-        const pond = FilePond.create(document.querySelector('#filepondinput'), {
-            allowMultiple: true,
-            maxFiles: 10,
-            acceptedFileTypes: ['image/*'],
-            server: {
-                process: {
-                    url: '{{ route("admin.upload.process") }}',
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    onload: (response) => {
-                        const res = JSON.parse(response);
-                        uploadedFilePaths.push(res.path); // Store in external array
-                        return res.path; // Return JUST the path string
-                    },
-                    onerror: (response) => {
-                        console.error('Upload failed:', response);
-                    }
-                },
-
-            },
-            onremovefile: (error, file) => {
-                if (!error && file.serverId) {
-                    // Remove from our array when file is removed
-                    uploadedFilePaths = uploadedFilePaths.filter(path => path !== file.serverId);
-                }
-            }
-        });
-
-        // Listen to form submission
-        document.querySelector('#productform').addEventListener('submit', function (e) {
-            // Check if all files are processed
-            const allFilesProcessed = pond.getFiles().every(file => file.serverId !== null);
-
-            if (!allFilesProcessed) {
-                e.preventDefault();
-                alert('Please wait for all files to finish uploading');
-                return false;
-            }
-
-            // Create/update hidden input with the file paths
-            let hiddenInput = document.querySelector('input[name="uploaded_files"]');
-            if (!hiddenInput) {
-                hiddenInput = document.createElement('input');
-                hiddenInput.type = 'hidden';
-                hiddenInput.name = 'uploaded_files';
-                this.appendChild(hiddenInput);
-            }
-
-            // Use the external array we've been maintaining
-            hiddenInput.value = JSON.stringify(uploadedFilePaths);
-
-            console.log('Submitting with files:', uploadedFilePaths); // Debug
-        });
-    </script>
-
-@endpush
 
 @push("scripts")
     <script>
@@ -167,10 +99,10 @@
             document.querySelector(".description_button").addEventListener("click", function () {
 
                 const description_row = `
-                                                    <div class="col-md-12 d-flex align-items-center gap-3 description_row mb-2">
-                                                        <input type="text" name="description[]" class="form-control flex-grow-1" placeholder="Enter description" />
-                                                        <i class="fas fa-trash delete_description mx-3" style="color: red;"></i>
-                                                    </div>`;
+                                                        <div class="col-md-12 d-flex align-items-center gap-3 description_row mb-2">
+                                                            <input type="text" name="description[]" class="form-control flex-grow-1" placeholder="Enter description" />
+                                                            <i class="fas fa-trash delete_description mx-3" style="color: red;"></i>
+                                                        </div>`;
 
                 document.querySelector(".description_div").insertAdjacentHTML("beforeend", description_row);
 
@@ -191,30 +123,7 @@
 
     </script>
 @endpush
-@push("scripts")
-    <script>
-       const container = document.querySelector('.main_image_container');
-const icon = container.querySelector('.plus_icon');
-const input = container.querySelector('.main_image');
 
-icon.addEventListener('click', () => input.click());
-
-input.addEventListener('change', (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            container.insertAdjacentHTML(
-                'beforeend',
-                `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:13px;">`
-            );
-        };
-        reader.readAsDataURL(file);
-    }
-});
-
-    </script>
-@endpush
 
 
 @push("scripts")

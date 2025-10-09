@@ -37,7 +37,7 @@ class ProductCategoryController extends Controller
         
 
         try{
-
+            
             $validate=$request->validate([
 
             "name"=>"required",
@@ -47,24 +47,19 @@ class ProductCategoryController extends Controller
 
          return redirect()->route("admin.Productcategory.index")->with(["success"=>"Product Added Successfully"]);
 
-        }catch(ValidationException $e){
+        }catch(ValidationException $e)
+        {
          
-
          return back()->withErrors($e->errors())->withInput();
 
-
-
-        }catch(Exception $e){
-
+        }
+        catch(Exception $e){
 
             return back()->with([
                 "error"=>$e->getMessage()
             ]);
-
-
         }
        
-
     }
 
     /**

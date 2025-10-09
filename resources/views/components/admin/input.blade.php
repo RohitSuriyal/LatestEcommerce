@@ -49,7 +49,7 @@
         @endforeach
     </select>
 
-@elseif($type == "file" && $name=="main_image")
+@elseif($type == "file" && $name=="main_image"||$name=="image")
     <label class="mx-3 my-2" for="{{$label}}">{{$label}}</label>
     <div class="main_image_container">
         <i class="fas fa-plus plus_icon" style="color: grey;"></i>

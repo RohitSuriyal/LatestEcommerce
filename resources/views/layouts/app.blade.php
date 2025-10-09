@@ -24,7 +24,8 @@
     <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
 
     {{-- this is the link href --}}
-       <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css"
+        rel="stylesheet">
     <style>
         h1 {
             color: black;
@@ -51,7 +52,11 @@
             color: black;
             font-weight: bold;
         }
+        .form_width{
+            width:93%!important;
+        }
     </style>
+    
 
     @stack("styles")
 </head>
@@ -71,8 +76,175 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
 
+
+    @push("scripts")
+        {{-- <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const container = document.querySelector('.main_image_container');
+                const icon = container.querySelector('.plus_icon');
+                const input = container.querySelector('.main_image');
+
+                icon.addEventListener('click', () => input.click());
+
+                input.addEventListener('change', (event) => {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            container.insertAdjacentHTML(
+                                'beforeend',
+                                `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:13px;">`
+                            );
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+
+            })
+        </script> --}}
+        <script>
+document.addEventListener("DOMContentLoaded", function () {
+    const container = document.querySelector('.main_image_container');
+    const icon = container.querySelector('.plus_icon');
+    const input = container.querySelector('.main_image');
+
+    icon.addEventListener('click', () => input.click());
+
+    input.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                // Remove any existing preview images first
+                const existingImg = container.querySelector('img');
+                if (existingImg) existingImg.remove();
+
+                // Insert the new image
+                reader.readAsDataURL(file);  //this is thensertion process
+                
+                container.insertAdjacentHTML(
+                    'beforeend',
+                    `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:13px;">`
+                );
+            };
+            
+        }
+    });
+});
+</script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const csrftoken = document.querySelector("meta[name='csrf-token']").getAttribute('content');
+
+                document.addEventListener("click", async function (e) {
+                    const btn = e.target.closest(".delete-btn");
+                    if (!btn) return; // not a delete button click
+
+                    e.preventDefault();
+
+                    if (!confirm("Are you sure you want to delete this?")) return;
+
+                    try {
+
+                        const res = await fetch(btn.href, {
+                            method: "DELETE",
+                            headers: {
+                                "X-CSRF-TOKEN": csrftoken,
+                                "Accept": "application/json"
+                            }
+                        });
+
+                        if (!res.ok) throw new Error("Delete failed");
+
+                        alert("Deleted successfully!");
+                        for (let tableId in window.LaravelDataTables) {
+
+                            window.LaravelDataTables[tableId].ajax.reload(null, false);
+                        }
+
+                    } catch (err) {
+                        console.error(err);
+                        alert("Error: " + err.message);
+                    }
+                });
+            });
+        </script>
+    @endpush
+
+    @push("scripts")
+
+        <!-- FilePond image preview plugin -->
+        <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.js"></script>
+
+        <script>
+            // Register the plugin
+            FilePond.registerPlugin(FilePondPluginImagePreview);
+
+            let uploadedFilePaths = []; // Store paths externally
+
+            // Initialize FilePond
+            const pond = FilePond.create(document.querySelector('#filepondinput'), {
+                allowMultiple: true,
+                maxFiles: 10,
+                acceptedFileTypes: ['image/*'],
+                server: {
+                    process: {
+                        url: '{{ route("admin.upload.process") }}',
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        onload: (response) => {
+                            const res = JSON.parse(response);
+                            uploadedFilePaths.push(res.path); // Store in external array
+                            return res.path; // Return JUST the path string
+                        },
+                        onerror: (response) => {
+                            console.error('Upload failed:', response);
+                        }
+                    },
+
+                },
+                onremovefile: (error, file) => {
+                    if (!error && file.serverId) {
+                        // Remove from our array when file is removed
+                        uploadedFilePaths = uploadedFilePaths.filter(path => path !== file.serverId);
+                    }
+                }
+            });
+
+            // Listen to form submission
+            document.querySelector('#productform').addEventListener('submit', function (e) {
+                // Check if all files are processed
+                const allFilesProcessed = pond.getFiles().every(file => file.serverId !== null);
+
+                if (!allFilesProcessed) {
+                    e.preventDefault();
+                    alert('Please wait for all files to finish uploading');
+                    return false;
+                }
+
+                // Create/update hidden input with the file paths
+                let hiddenInput = document.querySelector('input[name="uploaded_files"]');
+                if (!hiddenInput) {
+                    hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = 'uploaded_files';
+                    this.appendChild(hiddenInput);
+                }
+
+                // Use the external array we've been maintaining
+                hiddenInput.value = JSON.stringify(uploadedFilePaths);
+
+                console.log('Submitting with files:', uploadedFilePaths); // Debug
+            });
+        </script>
+
+    @endpush
+
     @stack("scripts")
-  
+
 
 </body>
 
