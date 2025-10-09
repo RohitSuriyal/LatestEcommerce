@@ -7,8 +7,10 @@ use Illuminate\Support\Facades\Route;
 require __DIR__ . '/admin.php';
 Route::get('/', function () {
 
-    return view('admin.registera');
-});
+    
+    return view('admin.register');
+
+})->name('admin.register');
 
 Route::get("/admin/login", function () {
 

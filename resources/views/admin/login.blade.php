@@ -225,8 +225,8 @@
 
 
             <button class="button-submit">Sign In</button>
-            <a href="{{route('admin.signup')}}">
-                <p class="p">Don't  have an account? <span class="span">Sign Up</span></p>
+            <a href="{{route('admin.register')}}">
+                <p class="p">Don't have an account? <span class="span">Sign Up</span></p>
             </a>
             <p class="p">Or With</p>
 
