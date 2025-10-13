@@ -32,7 +32,7 @@
 
         <!-- Nav Item - Pages Collapse Menu -->
         <li class="nav-item">
-            <a class="nav-link {{request()->routeIs('admin.product.*') ? '' : 'collapsed'}}" href="#"
+            <a class="nav-link {{request()->routeIs('admin.product.*') ? '' : 'collapsed'}}" href="{{ route('admin.dashboard') }}"
                 data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
                 <i class="fas fa-fw fa-cog"></i>
                 <span>Products</span>

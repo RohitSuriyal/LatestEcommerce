@@ -15,7 +15,8 @@
     @endpush
     <x-admin.pageheader title="Create Product" />
     <x-admin.error />
-    <form  method="post" action="{{route('admin.product.store')}}" id="productform" class="card w-100 mx-auto p-5 form_width"
+   
+    <form method="post" action="{{route('admin.product.store')}}" id="productform" class="card w-100 mx-auto p-5 form_width"
         enctype="multipart/form-data">
         @csrf
 
@@ -32,7 +33,8 @@
         </div>
         <div class="row my-3">
             <div class="col-md-6">
-                <x-admin.input name="rating" label="Rating" type="Number" placeholder="Enter the rating" />
+                <x-admin.input classname="rating" name="rating" label="Rating" type="Number"
+                    placeholder="Enter the rating" />
             </div>
 
             <div class="col-md-6">
@@ -44,7 +46,6 @@
             <div class="col-md-12">
                 <x-admin.input label="brand" name="brand" type="select" :items="$brands" />
             </div>
-
         </div>
 
         <div class="row my-3">
@@ -89,20 +90,25 @@
         <x-admin.button btnclass="btn btn-success" buttontext="Submit" type="submit" />
 
     </form>
+    @if ($errors->any())
+        <script>
+            window.isErrorReload = true;
+        </script>
+    @endif
+
 @endsection
-
-
 @push("scripts")
     <script>
         document.addEventListener('DOMContentLoaded', function () {
 
             document.querySelector(".description_button").addEventListener("click", function () {
 
-                const description_row = `
-                                                        <div class="col-md-12 d-flex align-items-center gap-3 description_row mb-2">
-                                                            <input type="text" name="description[]" class="form-control flex-grow-1" placeholder="Enter description" />
-                                                            <i class="fas fa-trash delete_description mx-3" style="color: red;"></i>
-                                                        </div>`;
+                const description_row =
+                    `
+                        <div class="col-md-12 d-flex align-items-center gap-3 description_row mb-2">
+                            <input type="text" name="description[]" class="form-control flex-grow-1" placeholder="Enter description" />
+                            <i class="fas fa-trash delete_description mx-3" style="color: red;"></i>
+                            </div>`;
 
                 document.querySelector(".description_div").insertAdjacentHTML("beforeend", description_row);
 
@@ -120,24 +126,33 @@
             }
         });
 
-
     </script>
 @endpush
 
-
-
 @push("scripts")
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () 
+        {    
             // Attach listener to both .discount and .price inputs
             document.querySelectorAll('.discount, .price').forEach(function (element) {
 
                 element.addEventListener('input', function () {
-                    document.querySelectorAll('.discount,.sale_price').forEach(function (element) {
-                        element.disabled = false;
 
+                    const value = parseFloat(document.querySelector(".discount").value);
+                    console.log(value);
+
+                    if (value > 100) 
+                    {
+                        document.querySelector(".discount").value = 100;
+
+                        return;
+                    }
+                    document.querySelectorAll('.discount,.sale_price').forEach(function (element) {
+
+                        element.disabled = false;
                     });
+
                     console.log("Input changed");
 
                     const discount = parseFloat(document.querySelector(".discount")?.value) || 0;
@@ -153,6 +168,39 @@
             });
 
         });
+        window.addEventListener("DOMContentLoaded", () => {
+            if (window.isErrorReload) 
+            {
+
+                const priceEl = document.querySelector(".price");
+
+                if (priceEl && priceEl.value) 
+                {
+                    console.log("Laravel redirect with error — enabling fields...");
+                    document.querySelectorAll('.sale_price, .discount').forEach(el => el.disabled = false);
+                }
+
+            } else {
+                console.log("Normal load");
+            }
+        });
+
+
+    </script>
+    {{-- //for the discount valiadtion --}}
+    <script>
+     document.addEventListener('DOMContentLoaded',function(){
+        
+        document.querySelector(".rating").addEventListener('input', function () {
+
+                const value = this.value;
+                if (value > 5) {
+                    this.value = 5;
+                    return;
+                }
+            })
+     })
+
     </script>
 
 

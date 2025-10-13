@@ -47,7 +47,7 @@ class ProductDataTable extends DataTable
                 return '
                  <a class="btn btn-success" href="' . route('admin.product.edit', $row->id) . '">Edit</a>
 
-                 <a class="btn btn-danger" href="' . route('admin.product.destroy', $row->id) . '">Delete</a>
+                 <a class="btn btn-danger delete-btn" href="' . route('admin.product.destroy', $row->id) . '">Delete</a>
                 
                 ';
             })->rawColumns(['action','image'])

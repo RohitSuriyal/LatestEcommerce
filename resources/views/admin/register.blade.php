@@ -256,8 +256,6 @@
                 </svg>
                 <input type="password" name="password_confirmation" class="input" placeholder="Confirm your Password" />
 
-
-
             </div>
             @error('password')
                 <span class="text-danger">

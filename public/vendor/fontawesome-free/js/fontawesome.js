@@ -10,7 +10,8 @@
       _typeof = function (obj) {
         return typeof obj;
       };
-    } else {
+    } else 
+      {
       _typeof = function (obj) {
         return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
       };

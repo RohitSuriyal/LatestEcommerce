@@ -52,11 +52,12 @@
             color: black;
             font-weight: bold;
         }
-        .form_width{
-            width:93%!important;
+
+        .form_width {
+            width: 93% !important;
         }
     </style>
-    
+
 
     @stack("styles")
 </head>
@@ -78,7 +79,8 @@
 
 
     @push("scripts")
-        {{-- <script>
+        {{--
+        <script>
             document.addEventListener("DOMContentLoaded", function () {
                 const container = document.querySelector('.main_image_container');
                 const icon = container.querySelector('.plus_icon');
@@ -103,35 +105,37 @@
             })
         </script> --}}
         <script>
-document.addEventListener("DOMContentLoaded", function () {
-    const container = document.querySelector('.main_image_container');
-    const icon = container.querySelector('.plus_icon');
-    const input = container.querySelector('.main_image');
+            document.addEventListener("DOMContentLoaded", function () {
+                const container = document.querySelector('.main_image_container');
+                const icon = container.querySelector('.plus_icon');
+                const input = container.querySelector('.main_image');
 
-    icon.addEventListener('click', () => input.click());
+                icon.addEventListener('click', () => input.click());
 
-    input.addEventListener('change', (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                // Remove any existing preview images first
-                const existingImg = container.querySelector('img');
-                if (existingImg) existingImg.remove();
+                input.addEventListener('change', (event) => {
+                    console.log("fsdfsfdsf");
+                    const file = event.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.readAsDataURL(file);  //this is thensertion process
+                        reader.onload = (e) => {
+                            // Remove any existing preview images first
+                            const existingImg = container.querySelector('img');
+                            if (existingImg) existingImg.remove();
 
-                // Insert the new image
-                reader.readAsDataURL(file);  //this is thensertion process
-                
-                container.insertAdjacentHTML(
-                    'beforeend',
-                    `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:13px;">`
-                );
-            };
-            
-        }
-    });
-});
-</script>
+                            // Insert the new image
+
+
+                            container.insertAdjacentHTML(
+                                'beforeend',
+                                `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:13px;">`
+                            );
+                        };
+
+                    }
+                });
+            });
+        </script>
 
         <script>
             document.addEventListener("DOMContentLoaded", function () {
@@ -146,7 +150,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (!confirm("Are you sure you want to delete this?")) return;
 
                     try {
-
+                        
                         const res = await fetch(btn.href, {
                             method: "DELETE",
                             headers: {
@@ -171,6 +175,8 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         </script>
     @endpush
+
+  
 
     @push("scripts")
 

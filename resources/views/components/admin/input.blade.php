@@ -36,7 +36,7 @@
 @if($type == "text" || $type == "Number")
 
     <label for="{{$name}}">{{$label}}</label>
-    <input value="{{old($name)}}" {{$step}} {{$prop}} class="form-control {{$classname}}" step="0.01" name="{{$name}}" placeholder="{{$placeholder}}" type="{{$type}}" />
+    <input {{ $name=="discount"? 'max=100' :'' }}  value="{{old($name)}}" {{$step}} {{$prop}} class="form-control {{$classname}}" step="0.01" name="{{$name}}" placeholder="{{$placeholder}}" type="{{$type}}" />
 
 @elseif($type == "select" && isset($items))
 
