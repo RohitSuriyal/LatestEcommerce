@@ -21,6 +21,7 @@ class Product extends Model
         'main_image',
         'product_images',
         'brand',
+        'user_id',  
         
     ];
 

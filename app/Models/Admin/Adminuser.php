@@ -2,6 +2,7 @@
 
 namespace App\Models\Admin;
 
+use App\Models\Product;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -13,7 +14,15 @@ class Adminuser extends Authenticatable
     protected $fillable = [
         'email',
         'password',
+        'email_verified_at',
+        'status',
     ];
+
+
+    public function products(){
+
+        return $this->hasMany(Product::class,"user_id");
+    }
 
     // If you want to hide the password when serializing
     protected $hidden = [

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\AdminRegister;
 use App\Http\Controllers\Controller;
 use App\Models\Admin\Adminuser;
 use Exception;
@@ -24,9 +25,18 @@ class AuthController extends Controller
 
             $validated["password"] = Hash::make($request->password);
 
-            Adminuser::create($validated);
+            $user = Adminuser::create($validated);
 
-            return redirect()->route("admin.loginview");
+
+
+
+            AdminRegister::dispatch($user);
+
+
+            session()->put('user', $user);
+
+
+            return redirect()->route("admin.verificationnotice");
         } catch (ValidationException $e) {
 
             return back()->withErrors($e->errors())->withInput();
@@ -61,9 +71,21 @@ class AuthController extends Controller
             } else {
 
                 Auth::guard("admin")->login($admin);
+                if ($admin->status == true) {
+                    return redirect()->route('admin.dashboard');
+                } else {
+                    AdminRegister::dispatch($admin);
 
-                return redirect()->route('admin.dashboard');
+                    session()->put('user', $admin);
+
+                    return redirect()->route("admin.verificationnotice");
+                }
             }
         }
+    }
+    public function verificationnotice()
+    {
+
+        return view("admin.verifynotice");
     }
 }

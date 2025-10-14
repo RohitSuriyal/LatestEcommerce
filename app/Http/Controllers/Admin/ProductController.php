@@ -11,6 +11,7 @@ use App\Models\Subcategory;
 use Exception;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator as FacadesValidator;
 use Illuminate\Validation\ValidationException;
@@ -76,7 +77,7 @@ class ProductController extends Controller
              
             $validate["product_images"] = json_encode($request->product_images);
             //  'product_images' => json_encode($productImages, JSON_UNESCAPED_SLASHES), 
-
+            $validate["user_id"]=Auth::guard('admin')->user()->id;
             Product::create($validate);
 
             return redirect()->route('admin.product.index')->with(["success" => "Product Successfully Added"]);
@@ -277,7 +278,8 @@ class ProductController extends Controller
 
                 // Map Excel columns to database fields
                 $productData = [
-                    'name' => $row[0] ?? null,           // Column A
+                    'name' => $row[0] ?? null,    
+                    'user_id'=>Auth::guard("admin")->user()->id,       // Column A
                     'price' => $row[1] ?? null,          // Column B
                     'rating' => $row[2] ?? null,         // Column C
                     'discount' => $row[3] ?? null,       // Column D
@@ -296,8 +298,11 @@ class ProductController extends Controller
                 $successCount++;
                 
             } catch (Exception $e) {
+                 
+                dd($e->getMessage());
                 $errors[] = "Row {$rowNumber}: " . $e->getMessage();
                 $errorCount++;
+                return back()->with('error', 'Failed to process file: ' . $e->getMessage());
             }
         }
 
@@ -313,6 +318,10 @@ class ProductController extends Controller
         return redirect()->route('admin.product.index')->with('success', $message);
         
     } catch (Exception $e) {
+
+        dd($e->getMessage());
+
+       
         return back()->with('error', 'Failed to process file: ' . $e->getMessage());
     }
 }

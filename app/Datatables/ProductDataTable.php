@@ -4,6 +4,7 @@ namespace App\DataTables;
 
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
@@ -61,7 +62,10 @@ class ProductDataTable extends DataTable
      */
     public function query(Product $model): QueryBuilder
     {
-        return $model->newQuery()->with('categoryname', 'brandname', 'subcategoryname'); // eager load category
+
+        $userid=Auth::guard("admin")->user()->id;
+
+        return $model->newQuery()->where("user_id",$userid)->with('categoryname', 'brandname', 'subcategoryname'); // eager load category
     }
 
     /**
