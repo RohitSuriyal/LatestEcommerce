@@ -5,15 +5,14 @@
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
         <!-- Sidebar - Brand -->
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="{{ route('admin.dashboard') }}">
             <div class="sidebar-brand-icon rotate-n-15">
                 <i class="fas fa-laugh-wink"></i>
             </div>
             <div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div>
         </a>
 
-        <!-- Divider -->
-        <hr class="sidebar-divider my-0">
+
 
         <!-- Nav Item - Dashboard -->
         <li class="nav-item active">
@@ -32,8 +31,9 @@
 
         <!-- Nav Item - Pages Collapse Menu -->
         <li class="nav-item">
-            <a class="nav-link {{request()->routeIs('admin.product.*') ? '' : 'collapsed'}}" href="{{ route('admin.dashboard') }}"
-                data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+            <a class="nav-link {{ request()->routeIs('admin.product.*') ? '' : 'collapsed' }}"
+                href="{{ route('admin.dashboard') }}" data-toggle="collapse" data-target="#collapseTwo"
+                aria-expanded="true" aria-controls="collapseTwo">
                 <i class="fas fa-fw fa-cog"></i>
                 <span>Products</span>
             </a>
@@ -43,14 +43,14 @@
 
                 <div class="bg-white py-2 collapse-inner rounded">
                     <h6 class="collapse-header">Add Product</h6>
-                    <a class="collapse-item  {{request()->routeIs('admin.product.index', 'admin.product.*') ? 'active' : ''}}"
-                        href="{{route('admin.product.index')}}">Add Product</a>
-                    <a class="collapse-item {{request()->routeIs('admin.Productcategory.index') ? 'active' : ''}}"
-                        href="{{route('admin.Productcategory.index')}}">Add Product Category</a>
-                    <a class="collapse-item {{request()->routeIs('admin.subcategory.index') ? 'active' : ''}}"
-                        href="{{route('admin.subcategory.index')}}">Add Subcategory </a>
-                    <a class="collapse-item {{request()->routeIs('admin.brand.index') ? 'active' : ''}}"
-                        href="{{route('admin.brand.index')}}">Add Brand Category </a>
+                    <a class="collapse-item  {{ request()->routeIs('admin.product.index', 'admin.product.*') ? 'active' : '' }}"
+                        href="{{ route('admin.product.index') }}">Add Product</a>
+                    <a class="collapse-item {{ request()->routeIs('admin.Productcategory.index') ? 'active' : '' }}"
+                        href="{{ route('admin.Productcategory.index') }}">Add Product Category</a>
+                    <a class="collapse-item {{ request()->routeIs('admin.subcategory.index') ? 'active' : '' }}"
+                        href="{{ route('admin.subcategory.index') }}">Add Subcategory </a>
+                    <a class="collapse-item {{ request()->routeIs('admin.brand.index') ? 'active' : '' }}"
+                        href="{{ route('admin.brand.index') }}">Add Brand Category </a>
 
                 </div>
             </div>
@@ -64,12 +64,12 @@
 
         <!-- Nav Item - Charts -->
         <li class="nav-item">
-            <a class="nav-link" href="{{route('admin.banner.index')}}">
+            <a class="nav-link" href="{{ route('admin.banner.index') }}">
                 <i class="fas fa-fw fa-chart-area"></i>
                 <span>Banner</span></a>
         </li>
 
-      
+
 
         <!-- Divider -->
         <hr class="sidebar-divider d-none d-md-block">
@@ -127,7 +127,7 @@
                     </li>
 
                     <!-- Nav Item - Alerts -->
-                    <li class="nav-item dropdown no-arrow mx-1">
+                    {{-- <li class="nav-item dropdown no-arrow mx-1">
                         <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fas fa-bell fa-fw"></i>
@@ -173,7 +173,8 @@
                                     Spending Alert: We've noticed unusually high spending for your account.
                                 </div>
                             </a>
-                            <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
+                            <a class="dropdown-item text-center small text-gray-500" href="#">Show All
+                                Alerts</a>
                         </div>
                     </li>
 
@@ -236,9 +237,10 @@
                                     <div class="small text-gray-500">Chicken the Dog · 2w</div>
                                 </div>
                             </a>
-                            <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
+                            <a class="dropdown-item text-center small text-gray-500" href="#">Read More
+                                Messages</a>
                         </div>
-                    </li>
+                    </li> --}}
 
                     <div class="topbar-divider d-none d-sm-block"></div>
 
@@ -246,13 +248,14 @@
                     <li class="nav-item dropdown no-arrow">
                         <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{Auth::guard("admin")->user()->email}}</span>
+                            <span
+                                class="mr-2 d-none d-lg-inline text-gray-600 small">{{ Auth::guard('admin')->user()->email }}</span>
                             <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
                         </a>
                         <!-- Dropdown - User Information -->
                         <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                             aria-labelledby="userDropdown">
-                            <a class="dropdown-item" href="#">
+                            {{-- <a class="dropdown-item" href="#">
                                 <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                 Profile
                             </a>
@@ -263,9 +266,9 @@
                             <a class="dropdown-item" href="#">
                                 <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
                                 Activity Log
-                            </a>
+                            </a> --}}
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="{{route('admin.logout')}}" >
+                            <a class="dropdown-item" href="{{ route('admin.logout') }}">
                                 <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
                                 Logout
                             </a>

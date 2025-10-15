@@ -14,13 +14,13 @@
     <!-- Styles / Scripts -->
 
     {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
-    <link href="{{asset('vendor/fontawesome-free/css/all.min.css')}}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <link href="{{asset('css/sb-admin-2.min.css')}}" rel="stylesheet" />
+    <link href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet" />
     <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
 
     {{-- this is the link href --}}
@@ -59,14 +59,14 @@
     </style>
 
 
-    @stack("styles")
+    @stack('styles')
 </head>
 
 <body class="">
 
     <x-admin.header />
 
-    @yield("content")
+    @yield('content')
 
     <x-admin.footer />
 
@@ -78,7 +78,7 @@
     <script src="https://unpkg.com/filepond@^4/dist/filepond.js"></script>
 
 
-    @push("scripts")
+    @push('scripts')
         {{--
         <script>
             document.addEventListener("DOMContentLoaded", function () {
@@ -105,43 +105,73 @@
             })
         </script> --}}
         <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const container = document.querySelector('.main_image_container');
-                const icon = container.querySelector('.plus_icon');
-                const input = container.querySelector('.main_image');
+            function successalert(data) {
 
-                icon.addEventListener('click', () => input.click());
-
-                input.addEventListener('change', (event) => {
-                    console.log("fsdfsfdsf");
-                    const file = event.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.readAsDataURL(file);  //this is thensertion process
-                        reader.onload = (e) => {
-                            // Remove any existing preview images first
-                            const existingImg = container.querySelector('img');
-                            if (existingImg) existingImg.remove();
-
-                            // Insert the new image
+                swal.fire({
+                    toast: true,
+                    position: "top-end",
+                    icon: "success",
+                    title: data.message,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    showConfirmButton: false, // Show a progress bar
 
 
-                            container.insertAdjacentHTML(
-                                'beforeend',
-                                `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:13px;">`
-                            );
-                        };
 
-                    }
                 });
-            });
+            }
+
+            function failurealert(data) {
+                swal.fire({
+                    toast: true,
+                    position: "top-end",
+                    icon: "error",
+                    title: data.message,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    showConfirmButton: false, // Show a progress bar
+
+
+
+                });
+            }
+                document.addEventListener("DOMContentLoaded", function() {
+                    const container = document.querySelector('.main_image_container');
+                    const icon = container.querySelector('.plus_icon');
+                    const input = container.querySelector('.main_image');
+
+                    icon.addEventListener('click', () => input.click());
+
+                    input.addEventListener('change', (event) => {
+                        console.log("fsdfsfdsf");
+                        const file = event.target.files[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.readAsDataURL(file); //this is thensertion process
+                            reader.onload = (e) => {
+                                // Remove any existing preview images first
+                                const existingImg = container.querySelector('img');
+                                if (existingImg) existingImg.remove();
+
+                                // Insert the new image
+
+
+                                container.insertAdjacentHTML(
+                                    'beforeend',
+                                    `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;border-radius:13px;">`
+                                );
+                            };
+
+                        }
+                    });
+                });
         </script>
 
         <script>
-            document.addEventListener("DOMContentLoaded", function () {
+            document.addEventListener("DOMContentLoaded", function() {
                 const csrftoken = document.querySelector("meta[name='csrf-token']").getAttribute('content');
 
-                document.addEventListener("click", async function (e) {
+                document.addEventListener("click", async function(e) {
                     const btn = e.target.closest(".delete-btn");
                     if (!btn) return; // not a delete button click
 
@@ -150,7 +180,7 @@
                     if (!confirm("Are you sure you want to delete this?")) return;
 
                     try {
-                        
+
                         const res = await fetch(btn.href, {
                             method: "DELETE",
                             headers: {
@@ -176,10 +206,9 @@
         </script>
     @endpush
 
-  
 
-    @push("scripts")
 
+    @push('scripts')
         <!-- FilePond image preview plugin -->
         <script src="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.js"></script>
 
@@ -196,7 +225,7 @@
                 acceptedFileTypes: ['image/*'],
                 server: {
                     process: {
-                        url: '{{ route("admin.upload.process") }}',
+                        url: '{{ route('admin.upload.process') }}',
                         method: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -221,7 +250,7 @@
             });
 
             // Listen to form submission
-            document.querySelector('#productform').addEventListener('submit', function (e) {
+            document.querySelector('#productform').addEventListener('submit', function(e) {
                 // Check if all files are processed
                 const allFilesProcessed = pond.getFiles().every(file => file.serverId !== null);
 
@@ -246,10 +275,9 @@
                 console.log('Submitting with files:', uploadedFilePaths); // Debug
             });
         </script>
-
     @endpush
 
-    @stack("scripts")
+    @stack('scripts')
 
 
 </body>

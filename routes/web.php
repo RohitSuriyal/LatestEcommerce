@@ -12,13 +12,11 @@ require __DIR__ . '/frontend.php';
 
 Route::middleware(["mail_token_refresh"])->group(function () {
 
-    Route::get('/', function () {
-
-
+    Route::get('/admin/signup', function () {
         return view('admin.register');
     })->name('admin.register');
 
-    Route::get("/admin/login", function () {
+    Route::get("/", function () {
 
         return view("admin.login");
     })->name("admin.loginview");

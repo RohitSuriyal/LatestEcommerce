@@ -164,7 +164,7 @@
             });
         }
 
-        function failurealert() {
+        function failurealert(data) {
             swal.fire({
                 toast: true,
                 position: "top-end",

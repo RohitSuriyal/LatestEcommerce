@@ -117,7 +117,7 @@
                 Verification Email</a>
 
 
-            <span class="resend-link" onclick="location.reload();">Refresh Page</span>
+            
         </div>
     @else
         <div class="expired-screen d-flex flex-column justify-content-center align-items-center vh-100">
