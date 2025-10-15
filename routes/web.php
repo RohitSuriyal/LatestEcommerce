@@ -23,14 +23,16 @@ Route::middleware(["mail_token_refresh"])->group(function () {
 
     Route::get("/admin/logout", function () {
 
+
+       
         Auth::guard('admin')->logout();
 
         // Optional: invalidate the session
         request()->session()->invalidate();
         request()->session()->regenerateToken();
-
+        
         // Redirect to admin login page
-        return redirect()->route('admin.login'); // make sure this route exists
+        return redirect()->route('admin.loginview'); // make sure this route exists
 
 
     })->name('admin.logout');
