@@ -341,7 +341,11 @@
                 }
 
                 // Show general error alert
-                showAlert('danger', 'Please correct the errors below.');
+                const data={
+                    "message":"Please fill the complete details"
+                }
+                failurealert(data);
+               
             }
 
             // Function to show alert messages
