@@ -176,7 +176,7 @@
     <div class="col-md-9 pl-4 ">
       @foreach ($products as $product)
       <a class="list-unstyled text-decoration-none" href="{{ route('frontend.singleproduct',$product->id) }}">
-        <div class="row d-flex mb-3 p-2 box_shadow ">
+        <div  class="row d-flex mb-3 p-2 box_shadow ">
                 <div class="col-md-2">
                   <img height="200px" style="object-fit:cover" class="w-100 rounded"
                     src="{{ asset('storage/' . $product->main_image) }}"

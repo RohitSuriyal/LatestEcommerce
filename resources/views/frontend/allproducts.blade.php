@@ -1,6 +1,6 @@
 @extends('layouts.website')
 
-@push("styles")
+@push('styles')
     <style>
         .box_shadow {
             box-shadow: 0.3px 0.4px 1px rgba(0, 0, 0, 0.5);
@@ -13,66 +13,61 @@
     </style>
 @endpush
 
-@section("content")
-
+@section('content')
     <div id="product-container">
         <x-frontend.allproductsnew :products="$products" id="$id" :categories="$categories" :brands="$brands" />
     </div>
-
 @endsection
 
-@push("scripts")
-    @push('scripts')
-        <script>
-            function initCustomDropdowns() {
-                const dropdowns = document.querySelectorAll(".custom-dropdown");
-                const category_checkboxes = document.querySelectorAll(".category-checkbox");
-                const brand_category = document.querySelectorAll(".brand-checkbox");
-
-                category_checkboxes.forEach(function (item) {
-                    if (item.checked) {
-
-                        item.closest(".custom-dropdown").classList.add('open');
-
-                    }
-                });
-
-
-                brand_category.forEach(function (item) {
-
-                    if (item.checked) {
-                        console.log("inside this");
-
-                        item.closest(".custom-dropdown").classList.add('open')
-
-                    }
-
-                });
-
-                dropdowns.forEach(dropdown => {
-                    const button = dropdown.querySelector("button");
-                    const content = dropdown.querySelector(".dropdown-content");
-
-                    button.addEventListener("click", (e) => {
-                        const parent = e.target.closest(".dropdown-content");
-
-                        // If NOT clicked inside dropdown-content → toggle this dropdown only
-                        if (!parent) {
-                            dropdowns.forEach(d => {
-                                if (d !== dropdown) d.classList.remove("open");
-                            });
-                            dropdown.classList.toggle("open");
-                        }
-                    });
-                });
-            }
-            initCustomDropdowns();
-
-        </script>
-
-    @endpush
+@push('scripts')
     <script>
-        const id = @json($id ?? "");
+        function initCustomDropdowns() {
+            const dropdowns = document.querySelectorAll(".custom-dropdown");
+            const category_checkboxes = document.querySelectorAll(".category-checkbox");
+            const brand_category = document.querySelectorAll(".brand-checkbox");
+
+            category_checkboxes.forEach(function(item) {
+                if (item.checked) {
+
+                    item.closest(".custom-dropdown").classList.add('open');
+
+                }
+            });
+
+
+            brand_category.forEach(function(item) {
+
+                if (item.checked) {
+                    console.log("inside this");
+                    item.closest(".custom-dropdown").classList.add('open')
+
+                }
+
+            });
+
+            dropdowns.forEach(dropdown => {
+                const button = dropdown.querySelector("button");
+                const content = dropdown.querySelector(".dropdown-content");
+
+                button.addEventListener("click", (e) => {
+                    const parent = e.target.closest(".dropdown-content");
+
+
+                    // If NOT clicked inside dropdown-content → toggle this dropdown only
+                    if (!parent) {
+                        dropdowns.forEach(d => {
+                            if (d !== dropdown) d.classList.remove("open");
+                        });
+                        dropdown.classList.toggle("open");
+                    }
+                });
+            });
+        }
+        initCustomDropdowns();
+    </script>
+
+    <script>
+        const id = @json($id ?? '');
         const csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute('content');
         // Delegate click for pagination links
 
@@ -85,35 +80,42 @@
             performSearch(page);
         });
 
-        async function performSearch(page = 1) {
-
+        async function performSearch(page = 1) 
+        {
             const categories = Array.from(document.querySelectorAll(".category-checkbox"))
                 .filter(item => item.checked)
                 .map(e => e.value);
 
-            const brands = Array.from(document.querySelectorAll(".brand-checkbox")).filter(item=>item.checked).map(e=>e.value);
-           
+            const brands = Array.from(document.querySelectorAll(".brand-checkbox")).filter(item => item.checked).map(
+                e => e.value);
+
             try {
                 const res = await fetch(`{{ route('frontend.paginateproducts') }}?page=${page}`, {
                     method: "POST",
+
                     headers: {
                         "Content-Type": "application/json",
                         "X-CSRF-TOKEN": csrfToken
                     },
-                    body: JSON.stringify({ 
+                    body: JSON.stringify({
                         id: id,
-                        brands:brands,
-                        categories:categories,
-                        
-                     })
+                        brands: brands,
+                        categories: categories,
+                    });
                 });
 
                 const data = await res.json();
-
+                console.log(data);
                 if (data.html) {
-                    // Replace product list and pagination
+
+                   
                     document.getElementById('product-container').innerHTML = data.html;
-                    initCustomDropdowns()
+                    initCustomDropdowns();
+                    if (window.AOS) 
+                    {
+
+                        setTimeout(() => AOS.refresh(), 50); // 50ms is usually enough
+                    }
 
                     // Scroll to top of product list
                     window.scrollTo({
@@ -121,8 +123,7 @@
                         behavior: 'smooth'
                     });
                 }
-            } catch (err) 
-            {
+            } catch (err) {
 
                 console.error("Search error:", err);
 
@@ -130,9 +131,9 @@
         }
     </script>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             // Event delegation for category and brand checkboxes
-            document.body.addEventListener("change", async function (e) {
+            document.body.addEventListener("change", async function(e) {
                 if (!e.target.matches(".brand-checkbox, .category-checkbox")) return;
 
                 // Collect selected categories
@@ -147,14 +148,14 @@
                     .filter(c => c.checked)
                     .map(c => parseFloat(c.value));
 
-                const csrftoken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                const csrftoken = document.querySelector('meta[name="csrf-token"]').getAttribute(
+                    'content');
 
                 try {
 
                     const result = await fetch("{{ route('frontend.paginateproducts') }}", {
                         method: "POST",
-                        headers:
-                        {
+                        headers: {
                             'Content-Type': 'application/json',
                             'X-CSRF-TOKEN': csrftoken,
                         },
@@ -174,9 +175,11 @@
                     }
 
                     const data = await result.json();
-
-                    if (data.html) {
-
+                   
+                    if (data.html) 
+                    {
+                        
+                        AOS.init();
                         document.getElementById('product-container').innerHTML = data.html;
 
                         // Re-initialize custom dropdowns if you have any
@@ -186,11 +189,8 @@
 
                             top: document.getElementById('product-container').offsetTop - 100,
                             behavior: 'smooth'
-
                         });
-
                     }
-
                 } catch (err) {
                     console.error(err);
                     alert("Network error: " + err.message);
@@ -199,6 +199,4 @@
 
         });
     </script>
-
-
 @endpush

@@ -7,23 +7,6 @@
 
     @push('styles')
         <style>
-            .serial_no {
-                padding: 0% 1%;
-                background-color: rgb(248, 224, 224);
-                border-radius: 13px !important;
-                margin: 0% 1%;
-                color: blue;
-
-            }
-
-            .continue {
-                background-color: #ff9f00;
-                padding: 1% 7%;
-                color: white;
-                font-weight: 600;
-            }
-        </style>
-        <style>
             /* Container inline with price */
             .flipkart-quantity {
                 display: flex;
@@ -46,6 +29,11 @@
                 border: none;
             }
 
+            .continue {
+                background-color: orange;
+                color: white;
+            }
+
             .quantity_btn {
                 padding: 5px 16px;
                 border-radius: 30px !important;
@@ -53,6 +41,13 @@
                 background-color: orange;
                 outline: none;
                 border: none;
+            }
+
+            .serial_no {
+                padding: 0px 7px;
+                background-color: rgb(67, 146, 236);
+                border-radius: 13px;
+                margin-right: 2px;
             }
         </style>
     @endpush
@@ -210,8 +205,8 @@
                                 </button>
                             </h5>
 
-                            <div id="summary" class="collapse {{ session('product') && Auth()->guard('web')->check() ?'show':'' }}" aria-labelledby="headingTwo"
-                                data-parent="#accordion">
+                            <div id="summary" class="collapse {{ Auth()->guard('web')->check() ? 'show' : '' }}"
+                                aria-labelledby="headingTwo" data-parent="#accordion">
                                 <div class="card-body">
                                     <div class="row mx-0 d-flex gap-3">
                                         <div class="col-md-2">
@@ -254,7 +249,7 @@
                         </div>
                     </div>
                 </div>
-                @if (session('product') && Auth::guard("web")->check())
+                @if (Auth::guard('web')->check())
                     <div class=" card flex-row d-flex justify-content-between align-items-center my-3 p-3 ">
                         <div> Order confirmation Details will be send to <strong style="color:black">
                                 {{ Auth::guard('web')->user()->email }} </strong>
@@ -262,13 +257,10 @@
                         <button class="btn continue">Continue</button>
                     </div>
                 @endif
-
-
             </div>
 
             <div class="col-md-4">
-
-                @if (session('product'))
+                @if (Auth::guard('web')->check())
                     <div class="card">
                         <h4 class="mx-3 my-2">Price Details</h4>
                         <div class="row mx-0 px-3 py-3">
@@ -294,7 +286,6 @@
 
                                 </p>
                             </div>
-
                         </div>
 
                     </div>
@@ -486,6 +477,47 @@
                     quantity_checker(value);
                 }
             })
+
+        })
+        document.addEventListener("click", async function(e) {
+
+            const continuebutton = e.target.closest('.continue');
+
+            if (continuebutton) {
+
+                try {
+                    const amount_text = document.querySelector(".total_price").innerText;
+                    const amount=amount_text.replaceAll(",",'');
+
+
+
+                    const res = await fetch("{{ route('frontend.checkoutsession') }}", {
+
+                        method: "post",
+
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": csrftoken,
+                        },
+                        body: JSON.stringify({
+                            amount: amount,
+                        })
+
+                    });
+                    const data = await res.json();
+
+
+                    window.open(data.url, '_blank');
+
+
+                } catch (error) {
+
+                    Swal.fire('Error', error.message, 'error');
+                }
+
+            }
+
+
 
         })
     </script>

@@ -24,6 +24,7 @@
     <link href="https://unpkg.com/filepond@^4/dist/filepond.css" rel="stylesheet" />
 
     {{-- this is the link href --}}
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
     <style>
         body {
@@ -118,6 +119,25 @@
         }
     </style>
     @stack('styles')
+    @push('styles')
+        <style>
+            .serial_no {
+                padding: 0% 1%;
+                background-color: rgb(248, 224, 224);
+                border-radius: 13px !important;
+                margin: 0% 1%;
+                color: blue;
+
+            }
+
+            .continue {
+                background-color: #ff9f00;
+                padding: 1% 7%;
+                color: white;
+                font-weight: 600;
+            }
+        </style>
+    @endpush
 </head>
 
 <body class="">
@@ -131,9 +151,35 @@
 
         <x-frontend.footer />
     </div>
+    <div class="modal_content">
+        <x-frontend.cartmodal />
+
+    </div>
+    <div class="wishlist_modal_content">
+        <x-frontend.wishlistmodal />
+    </div>
+
+
+    @if (session('success') || session('failure') || session('otpfailure'))
+        <script>
+            const data = {
+                status: "{{ session('success') ? 'success' : (session('failure') ? 'failure' : 'otpfailure') }}",
+                message: "{{ session('success') ?? (session('failure') ?? session('otpfailure')) }}"
+            };
+
+            Swal.fire({
+                icon: data.status === 'success' ? 'success' : 'error',
+                title: data.status === 'success' ? 'Success' : 'Error',
+                text: data.message,
+                timer: 4000,
+                showConfirmButton: false
+            });
+        </script>
+    @endif
 
     <link rel="stylesheet" href="https://cdn.datatables.net/2.3.4/css/dataTables.bootstrap4.min.css">
     <!-- DataTables JS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
@@ -144,6 +190,9 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+    </script>
+    <script>
+        AOS.init();
     </script>
     <script>
         window.csrftoken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -158,9 +207,6 @@
                 timer: 3000,
                 timerProgressBar: true,
                 showConfirmButton: false, // Show a progress bar
-
-
-
             });
         }
 
@@ -173,15 +219,75 @@
                 timer: 3000,
                 timerProgressBar: true,
                 showConfirmButton: false, // Show a progress bar
-
-
-
             });
-
-
-
         }
     </script>
+    <script>
+        document.addEventListener("click", async function(e) {
+            // Check if the clicked element or any of its parents has the class "add_to_cart"
+            const addToCartBtn = e.target.closest(".add_to_cart");
+
+            if (addToCartBtn) {
+
+                const id = addToCartBtn.getAttribute("id");
+
+                try {
+                    const res = await fetch("{{ route('frontend.cartdata') }}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": csrftoken,
+                        },
+                        body: JSON.stringify({
+                            id: id
+                        }),
+                    });
+
+                    if (!res.ok) {
+                        const errorText = await res.text();
+                        console.error("Server Error:", errorText);
+                        alert(`Error ${res.status}: ${res.statusText}`);
+                        return;
+                    }
+
+                    const data = await res.json();
+                    console.log(data);
+                    if (data.status === "cart_loaded") 
+                    {
+                        const modalContent = document.querySelector(".modal_content");
+                        
+                        if (modalContent) 
+                        {
+                            modalContent.innerHTML = data.html;
+                             $('.modal.show').modal('hide');
+                            setTimeout(() => { 
+
+                                $('#exampleModal').modal('show');
+
+                            }, 500);
+
+
+                        }
+                    } else if (data.status === "added") {
+                        $("#exampleModalwishlist").modal('hide');
+
+                        successalert(data);
+
+                    } else if (data.status === "failure") {
+                        failurealert(data);
+                    } else {
+                        console.warn("Unexpected response:", data);
+                        alert("Unexpected response from server.");
+                    }
+
+                } catch (error) {
+                    console.error("Fetch failed:", error);
+                    alert("Network or fetch error: " + error.message);
+                }
+            }
+        });
+    </script>
+
     @stack('scripts')
 
 
