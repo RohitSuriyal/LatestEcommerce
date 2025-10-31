@@ -101,7 +101,7 @@
                         id: id,
                         brands: brands,
                         categories: categories,
-                    });
+                    })
                 })
 
                 const data = await res.json();
@@ -177,7 +177,6 @@
                    
                     if (data.html) 
                     {
-                        
                         AOS.init();
                         document.getElementById('product-container').innerHTML = data.html;
 
@@ -190,6 +189,7 @@
                             behavior: 'smooth'
                         });
                     }
+
                 } catch (err) {
                     console.error(err);
                     alert("Network error: " + err.message);
