@@ -102,13 +102,12 @@
                         brands: brands,
                         categories: categories,
                     });
-                });
+                })
 
                 const data = await res.json();
                 console.log(data);
                 if (data.html) {
 
-                   
                     document.getElementById('product-container').innerHTML = data.html;
                     initCustomDropdowns();
                     if (window.AOS) 
